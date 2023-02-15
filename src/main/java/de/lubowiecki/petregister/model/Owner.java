@@ -30,6 +30,8 @@ public class Owner {
 
     private String password;
 
-    @OneToMany(mappedBy = "owner")
+    // Alles was mit Owner passiert, wird weiter an dazugehörige Pet-Entities weitergegeben
+    // orphanRemoval: beim Löschen des Owners werden auch Pet-Datensätze aus der DB gelöscht
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Pet> pets = new HashSet<>();
 }

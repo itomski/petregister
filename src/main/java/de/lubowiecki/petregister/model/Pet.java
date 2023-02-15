@@ -31,7 +31,8 @@ public class Pet {
 
     private LocalDate birthDate;
 
-    @ManyToOne
+    // Falls Owner noch nicht in der DB ist, würde er persistiert (gespeichert) werden
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Owner owner;
 
     @Enumerated(EnumType.STRING)

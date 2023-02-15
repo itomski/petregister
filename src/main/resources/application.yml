@@ -5,9 +5,9 @@ spring:
     password: root
   jpa:
     database: mysql
-    show-sql: true
+    #show-sql: true
     hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
+      ddl-auto: update
+    #properties:
+    #  hibernate:
+    #    format_sql: true
