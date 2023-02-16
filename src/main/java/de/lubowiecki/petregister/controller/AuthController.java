@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+//@CrossOrigin(origins = {"","",""}) // Bei mehreren Werten
+//@CrossOrigin(origins = "") // bei einem Wert
 @CrossOrigin
 @RequiredArgsConstructor
 public class AuthController {

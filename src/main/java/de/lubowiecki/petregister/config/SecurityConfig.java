@@ -24,6 +24,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+                .cors() // CrossOrigin: Anfragen von anderen Domains/IPs erlauben
+                .and()
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth/**").permitAll() // Alle Seiten des Matchers ohne Authentifitierung erlauben
@@ -33,6 +35,10 @@ public class SecurityConfig {
                 .and()
                 .authenticationProvider(authenticationProvider) // Provider eintragen
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // Unseren JWT-Filter vorschalten
+
+        http.headers()
+                .defaultsDisabled()
+                .contentTypeOptions();
 
         return http.build();
     }

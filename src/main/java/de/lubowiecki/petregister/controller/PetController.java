@@ -18,8 +18,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/pets")
-@RequiredArgsConstructor
 @CrossOrigin
+@RequiredArgsConstructor
 public class PetController {
 
     private final PetRepository petRepository; // Bei final Feldern ist eine Constructor-Injection nötig
