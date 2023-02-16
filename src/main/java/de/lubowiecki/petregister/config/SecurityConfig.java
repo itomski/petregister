@@ -18,7 +18,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
 
-    private final AuthenticationProvider authenticationProvider; // Provider implementieren
+    private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -26,7 +26,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/**").permitAll() // Alle Seiten des Matchers ohne Authentifitierung erlauben
+                .requestMatchers("/api/v1/auth/**").permitAll() // Alle Seiten des Matchers ohne Authentifitierung erlauben
                 .anyRequest().authenticated() // Rest mit einer Authentifizierung absichern
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
