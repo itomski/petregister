@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +19,10 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/pets")
 @RequiredArgsConstructor
+@CrossOrigin
 public class PetController {
 
     private final PetRepository petRepository; // Bei final Feldern ist eine Constructor-Injection nötig
-    private final JwtService jwtService;
 
     @GetMapping
     public List<Pet> index() {
