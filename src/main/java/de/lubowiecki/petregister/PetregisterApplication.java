@@ -11,11 +11,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 @SpringBootApplication
 @RequiredArgsConstructor // Baut einen Konstruktor für finale Felder
+@Transactional
 public class PetregisterApplication implements CommandLineRunner {
 
 	// Werden über eine Constructor-Injection zugewiesen, daher kein @Autowired nötig
@@ -39,6 +41,7 @@ public class PetregisterApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+
 		/*
 		var owner = Owner.builder()
 								.firstname("Peter")
@@ -46,6 +49,8 @@ public class PetregisterApplication implements CommandLineRunner {
 								.email("p.parker@shield.org")
 								.password(passwordEncoder.encode("geheim#123"))
 								.build();
+
+		ownerRepository.save(owner);
 
 		var pet = Pet.builder()
 								.birthDate(LocalDate.of(2020, 1, 1))
@@ -59,5 +64,8 @@ public class PetregisterApplication implements CommandLineRunner {
 
 		petRepository.save(pet);
 		*/
+
+		// owner.addPet(pet); // statt owner.getPets().add(pet)
+		// ownerRepository.save(owner);
 	}
 }

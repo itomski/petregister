@@ -3,12 +3,14 @@ package de.lubowiecki.petregister.controller;
 import de.lubowiecki.petregister.model.AuthRequest;
 import de.lubowiecki.petregister.model.AuthResponse;
 import de.lubowiecki.petregister.model.Owner;
+import de.lubowiecki.petregister.model.RegisterRequest;
 import de.lubowiecki.petregister.repository.OwnerRepository;
 import de.lubowiecki.petregister.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,6 +27,8 @@ public class AuthController {
 
     public final JwtService jwtService;
 
+    public final PasswordEncoder passwordEncoder;
+
     @PostMapping("login")
     public AuthResponse authenticate(@RequestBody AuthRequest request) {
 
@@ -32,6 +36,23 @@ public class AuthController {
 
         Owner owner = ownerRepository.findByEmail(request.getEmail())
                                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        String token = jwtService.generateToken(owner);
+
+        return new AuthResponse(token);
+    }
+
+    @PostMapping("register")
+    public AuthResponse register(@RequestBody RegisterRequest request) {
+
+        Owner owner = Owner.builder()
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .firstname(request.getFistname())
+                        .lastname(request.getLastname())
+                        .build();
+
+        ownerRepository.save(owner);
 
         String token = jwtService.generateToken(owner);
 

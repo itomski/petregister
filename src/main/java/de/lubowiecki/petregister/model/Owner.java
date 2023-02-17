@@ -2,28 +2,30 @@ package de.lubowiecki.petregister.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.io.Serializable;
+import java.util.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Owner implements UserDetails { // UserDetails entspreicht einem User, der sich in SpringSecurity anmelden kann
+public class Owner implements UserDetails, Serializable { // UserDetails entspreicht einem User, der sich in SpringSecurity anmelden kann
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    /*
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @GeneratedValue(generator = "uuid")
+    @Column(columnDefinition = "BINARY(16)")
+    */
     private UUID id;
 
     private String firstname;
@@ -38,8 +40,8 @@ public class Owner implements UserDetails { // UserDetails entspreicht einem Use
 
     // Alles was mit Owner passiert, wird weiter an dazugehörige Pet-Entities weitergegeben
     // orphanRemoval: beim Löschen des Owners werden auch Pet-Datensätze aus der DB gelöscht
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Pet> pets = new HashSet<>();
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Pet> pets = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
