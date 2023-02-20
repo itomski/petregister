@@ -1,5 +1,6 @@
 package de.lubowiecki.petregister.controller;
 
+import de.lubowiecki.petregister.exception.PetNotFoundException;
 import de.lubowiecki.petregister.model.Pet;
 import de.lubowiecki.petregister.repository.OwnerRepository;
 import de.lubowiecki.petregister.repository.PetRepository;
@@ -32,8 +33,8 @@ public class PetController {
     }
 
     @GetMapping("{chipId}")
-    public Optional<Pet> byChipId(@PathVariable String chipId) {
-        return petRepository.findByChipId(chipId);
+    public Pet byChipId(@PathVariable String chipId) {
+        return petRepository.findByChipId(chipId).orElseThrow(() -> new PetNotFoundException());
     }
 
     @PostMapping

@@ -1,11 +1,14 @@
 package de.lubowiecki.petregister.controller;
 
+import de.lubowiecki.petregister.exception.OwnerAlreadyExistsException;
+import de.lubowiecki.petregister.exception.OwnerNotFoundException;
 import de.lubowiecki.petregister.model.AuthRequest;
 import de.lubowiecki.petregister.model.AuthResponse;
 import de.lubowiecki.petregister.model.Owner;
 import de.lubowiecki.petregister.model.RegisterRequest;
 import de.lubowiecki.petregister.repository.OwnerRepository;
 import de.lubowiecki.petregister.service.JwtService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,7 +35,12 @@ public class AuthController {
     @PostMapping("login")
     public AuthResponse authenticate(@RequestBody AuthRequest request) {
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        }
+        catch(Exception ex) {
+            throw new OwnerNotFoundException();
+        }
 
         Owner owner = ownerRepository.findByEmail(request.getEmail())
                                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -43,7 +51,12 @@ public class AuthController {
     }
 
     @PostMapping("register")
-    public AuthResponse register(@RequestBody RegisterRequest request) {
+    public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
+
+        var opt = ownerRepository.findByEmail(request.getEmail());
+        if(opt.isPresent()) {
+            throw new OwnerAlreadyExistsException();
+        }
 
         Owner owner = Owner.builder()
                         .email(request.getEmail())
@@ -53,7 +66,6 @@ public class AuthController {
                         .build();
 
         ownerRepository.save(owner);
-
         String token = jwtService.generateToken(owner);
 
         return new AuthResponse(token);
